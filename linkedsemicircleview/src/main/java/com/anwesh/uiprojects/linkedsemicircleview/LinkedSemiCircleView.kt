@@ -10,6 +10,7 @@ import android.graphics.Canvas
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.RectF
 
@@ -196,6 +197,7 @@ class LinkedSemiCircleView (ctx : Context) : View(ctx) {
     companion object {
         fun create(activity : Activity) : LinkedSemiCircleView {
             val view : LinkedSemiCircleView = LinkedSemiCircleView(activity)
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             activity.setContentView(view)
             return view
         }
