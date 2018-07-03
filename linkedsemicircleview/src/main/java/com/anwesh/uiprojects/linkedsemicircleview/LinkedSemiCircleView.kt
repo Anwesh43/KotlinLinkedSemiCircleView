@@ -10,6 +10,7 @@ import android.view.View
 import android.view.MotionEvent
 import android.content.Context
 import android.graphics.Color
+import android.graphics.RectF
 
 val SEMI_CIRCLE_NODES = 5
 val color : Int = Color.parseColor("#512DA8")
@@ -82,6 +83,64 @@ class LinkedSemiCircleView (ctx : Context) : View(ctx) {
 
                 }
             }
+        }
+    }
+
+    data class SemiCircleNode(var i : Int, val state : State = State()) {
+
+        var next : SemiCircleNode? = null
+
+        var prev : SemiCircleNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < SEMI_CIRCLE_NODES - 1) {
+                next = SemiCircleNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            prev?.draw(canvas, paint)
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = 0.8f * w / SEMI_CIRCLE_NODES
+            val r : Float = gap / 5
+            val index : Int = i % 2
+            val deg : Float = (180f) * index
+            val rot : Float = 180f * (1 - 2 * index) * state.scales[0]
+            paint.strokeWidth = Math.min(w, h) / 50
+            paint.strokeCap = Paint.Cap.ROUND
+            paint.style = Paint.Style.STROKE
+            paint.color = color
+            canvas.save()
+            canvas.translate(0.1f * w + gap * i + gap * state.scales[1], h/2)
+            canvas.rotate(deg + rot)
+            canvas.drawArc(RectF(-r, -r, r, r), 0f, 180f, false, paint)
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : SemiCircleNode{
+            var curr : SemiCircleNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
