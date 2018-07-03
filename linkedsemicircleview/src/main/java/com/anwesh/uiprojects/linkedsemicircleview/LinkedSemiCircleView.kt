@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedsemicircleview
  * Created by anweshmishra on 03/07/18.
  */
 
+import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Canvas
 import android.view.View
@@ -189,6 +190,14 @@ class LinkedSemiCircleView (ctx : Context) : View(ctx) {
             lsc.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedSemiCircleView {
+            val view : LinkedSemiCircleView = LinkedSemiCircleView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
