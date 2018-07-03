@@ -166,4 +166,27 @@ class LinkedSemiCircleView (ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedSemiCircleView) {
+
+        private val lsc : LinkedSemiCircle = LinkedSemiCircle(0)
+
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            lsc.draw(canvas, paint)
+            animator.animate {
+                lsc.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lsc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
